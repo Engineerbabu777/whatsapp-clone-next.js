@@ -36,9 +36,8 @@ export async function getServerSideProps (context) {
   const ref = collection(db, 'chats')
 
   // PREPARE THE MESSAGES ON THE SERVER!
-  const messages = await getDocs(
-    query(collection(db, 'messages'), orderBy('timestamp', 'asc'))
-  )
+  const queryMake = query(collection(db,'chats', context.query.id,'messages'),orderBy('timestamp','asc'))
+  const messages = await getDocs(queryMake)
   // GET THE SPECIFIC CHAT!
   const currentUser = await getDoc(doc(ref, context.query.id))
 
@@ -51,7 +50,7 @@ export async function getServerSideProps (context) {
 
   const chat = { id: currentUser.id, ...currentUser.data() }
 
-  console.log({ chat, data })
+  console.log({ chat, data,messages })
 
   return {
     props: { chat: JSON.stringify(chat), messages: JSON.stringify(data) }
